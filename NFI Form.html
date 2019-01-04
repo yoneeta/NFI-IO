@@ -1,0 +1,2426 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>NFI Pilot Test Form</title>
+				<script src="jquery.js"></script>
+		 <!--<script src="jQuery v1.8.3.js"></script>-->
+		 
+		 <script>
+		 var userShortCode;//global declaration 
+		 var user_last_form_num;
+		 var duplicate_controler=new Array();
+		 var duplicate_section='';
+		 var c4Array=new Array();
+		 
+		 var counter=0;
+		 
+		function yoni_Rank_validator(whocallesme,myvalues)
+		 {
+		 
+		// console.log(whocallesme+"name cut"+whocallesme.substring(0,2)+"**********----"+myvalues);
+		if(myvalues!=='')
+		{
+		$("#secC1").children('input').each(function(i,v)
+		{
+		if($(v).val()==myvalues)
+		{
+			counter++;
+			console.log("index @ "+i+"-With Value of-"+$(v).val()+"i count "+counter );
+		}
+		
+		});
+		if(counter>1)
+			{
+			counter=0;
+			alert("you have duplicate value");
+			$('input[name='+whocallesme+']').val('');
+			
+			}
+		}
+	/*	
+			if(whocallesme.substring(0,2)=="C1")
+			{
+					// console.log(whocallesme+"**********----"+myvalues);
+
+				if(c1array.length==0)
+					{
+						c1array.push(myvalues);
+					}
+				else
+					{
+						
+					jj=c1array.filter(function(item){return item===myvalues;}).length;
+						
+					console.log(jj);
+					if(jj>=1)
+						{
+						alert("you put duplicate entry");
+						$('input[name='+whocallesme+']').val('');
+						}
+					//*if(myvalues!='')
+						//c1array.push(myvalues);
+						//months = $.grep(c1array, function(value,i) {
+ //return ( value. == myvalues );
+ }//);
+
+					}
+*/			
+			}
+		 
+		 
+
+		 
+		 
+		 // this is for reseting values
+		 function yoni_formreset()
+		 {//var text_reseter
+		 //var dropdown_reseter
+		 //var radio_reseter
+		 
+resetRadioButton();
+resetTextBox("#secC2");
+resetTextBox("#secD1");
+resetTextBox("#secD2");
+resetTextBox("#secE21");
+ 
+resetTextBox("#secE42");
+resetTextBox("#secE44");
+resetTextBox("#secE45");
+resetTextBox("#secE5");
+ 
+resetTextBox("#secE32");
+resetTextBox("#secE33");
+resetTextBox("#secE34");
+resetTextBox("#secE41");
+ 
+resetTextBox("#secE22");
+resetTextBox("#secE23");
+resetTextBox("#secE24");
+resetTextBox("#secE31");
+
+var disable_r1=[
+"#secE31",
+"#secE32",
+"#secE33",
+"#secE34",
+"#secE35",
+"#secE41",
+"#secE42",
+"#secE43",
+"#secE44",
+"#secE45",
+"#secE5",
+"#secE21",
+"#secE22",
+"#secE23",
+"#secE24"];
+$('#tblDemographic tbody > tr').empty();
+ yoni_disable_only(disable_r1,'pcode');
+ 
+ getmysession();//i call to get base form number
+		 }
+		 //this is to disable an array of elements
+		 function yoni_disable_only(disableArray)
+		 {
+				$.each(disableArray, function(index, value) {
+					//console.log(value+"-----"+index);
+							$(value).children().prop('disabled',true);	
+							//$(value).children().val('');
+							
+							if(value=='#secE35')
+							{
+							console.log('igot it');
+							$('input[name=E351WHN][value=""]').prop('checked', 'checked');
+							}
+							else if(value=='#secE43')
+							{
+							  $('input[name=E43REDRET][value=""]').prop('checked', 'checked');
+
+							}
+							else
+							{
+							$(value).children().val('');
+							}
+					}); 
+		 }
+		 //this is for validate dependant entry on section B12
+		 function yoni_is_number_validataion(object_tob_validate,minz,maxz)
+		 {
+		 if($(object_tob_validate).val()!='')
+			{		 if($.isNumeric($(object_tob_validate).val()))
+						{
+							yoniValidation(object_tob_validate,minz,maxz);
+							}
+						else
+						{
+								alert("You Enter a string please insert a number");
+								$(object_tob_validate).val(0);
+							}
+				}
+		 }
+		 
+		 //this function help us to get session variable 
+		 //whic is user short code and last saved number
+		function getmysession()
+		 {		 	 
+					 var data = sessionStorage.getItem('key');
+					 user_last_form_num=data;
+					 userShortCode = sessionStorage.getItem('usc');
+							console.log('i do it on load...'+data+"myshotrcode"+userShortCode);
+							$("#formnum").val(userShortCode+data);
+							
+		 }
+		 
+		 
+		 
+		 //this function help us to define the max and min value of a textbox
+		 function yoniValidation(yobj,minv,maxv)
+		 {
+				 var currentV=$(yobj).val();
+			console.log("my current v look like "+currentV+"and name is "+$(yobj).attr('name'));
+
+				 if(currentV!=null && currentV!="" && currentV<minv || currentV>maxv)
+					{
+	var newcurV=prompt("You Enter Out of Range please put  value between "+minv+" and "+maxv+"");
+							if(newcurV==null || newcurV=="" || newcurV>=minv || newcurV<=maxv)
+								$(yobj).val(newcurV);
+							else
+								$(yobj).val('');
+					}
+					/*else{		
+							
+							yoni_Rank_validator($(yobj).attr('name'),$(yobj).val());
+					}*/
+					
+		 }
+		 function yoni_enable_disable_focus(enableArray,disableArray,focus_location)
+		 {
+					 var xr="";
+					// console.log('Enable Array '+enableArray);
+							// console.log('Disable Array '+disableArray);
+												//	 console.log('focus location '+focus_location);
+
+
+					 $.each(enableArray, function(index, value) {
+					 
+					 
+				$(value).children().prop('disabled',false);
+				/*console.log(index+'-----'+value);
+				$.each($(value).children(), function(index2, value2) {
+				console.log(index2+'-----'+value2+'<><><>'+this.type);
+				});*/
+				
+
+
+			});
+		 
+					$.each(disableArray, function(index, value) {
+					//console.log(value+"-----"+index);
+				$(value).children().prop('disabled',true);	
+				//$(value).children().val('');
+				
+				if(value=='#secE35')
+				{
+				console.log('igot it');
+				$('input[name=E351WHN][value=""]').prop('checked', 'checked');
+				}
+				else if(value=='#secE43')
+				{
+				  $('input[name=E43REDRET][value=""]').prop('checked', 'checked');
+
+				}
+				else
+				{
+				$(value).children().val('');
+				}
+	
+	/*$.each($(value).children(),function(i,v){
+	
+	//console.log('d'+v.name);
+	
+	if(v=='E351WHN')
+	{$('input[name=E351WHN][value=""]').prop('checked', 'checked');
+	}
+	
+	
+	else if(v=='E43REDRET')
+	{$('input[name=E43REDRET][value=""]').prop('checked', 'checked');
+}
+else{
+$('input[name='+v+']').val('');
+}
+	}
+	);*/
+	//$(value).children().$('input[type=number]').val('');
+	/*if(value!='#secE43')
+	{
+	console.log('this is not valid');
+	if(value!='#secE35')
+	{$(value).children().val('');
+	
+	}
+	else
+	{
+	  $('input[name=E351WHN][value=""]').prop('checked', 'checked');
+
+	}
+	//$(value).children().val('');
+	
+	}else
+	{
+	  $('input[name=E43REDRET][value=""]').prop('checked', 'checked');
+
+	}*/
+	
+	}); 
+		 
+		 
+		  $('input[type=number][name='+focus_location+']').focus();
+ 
+		 
+		 
+		 }
+		 </script>
+		   <script>
+  $( function() {
+    var availableTags = [
+      "Oromia",
+      "Somali",
+      "Tigray",
+      "SNNP",      
+      "Afar",
+	  "Dhanka",
+	  "Jijiga",
+	  "Danka",
+	  "KoraDame",
+	  "Darimu",
+	  "Wana Dhanka",
+	  "East Harerge",
+	  "West Harerge",
+	  "Tulu",
+	  "Dhenqa",
+	  "Chinaksen",
+	  "Hargessa",
+	  "Wacale",
+	  "Mulisa Guda",
+	  "Mito",
+	  "Fafan",
+	  "Shinile",
+	  "Erer",
+	  "Germama",
+	  "Felmetu Seba",
+	  "Madigala",
+	  "Amola",
+	  "Jarso",
+	  
+"Biyo Gababdu",
+"Chalchale",
+"Chinaksen  Kebele02",
+"Chinaksen Kebele03",
+"Dhaga Dhera",
+"Golmayo",
+"Gololcha",
+"Kochar",
+"Kola Roga",
+"Kora Dawe",
+"Lugo",
+"Marmar",
+"Masno",
+"Migira",
+"Mudhi Dawe",
+"Mulisa Guda",
+"Mulisa Igu",
+"Orda 2nd",
+"Qaliga",
+"Qararu",
+"Sarte",
+"Tiro Gudo",
+"Tiro Sandare",
+"Wachu Ifa",
+"Yugyug",
+"01 & 02",
+"Bishan Adi",
+"Burka Negeya",
+"Burqa Gaba",
+"Ceka Gamachu",
+"Chefe Gurumu",
+"Cheka Meyira Jalala",
+"Dire Waltana",
+"Gaba Gudina",
+"Gagawisa",
+"Golu",
+"Haqa Baas",
+"Haremfema Kuni",
+"Kebele 01",
+"Lamen Waltana",
+"Madda Jalala",
+"Mekela",
+"Mito",
+"Mumicha",
+"Nadhi Galan Sadi",
+"Nano Jalala",
+"Qabso Tekuma",
+"Soka Keb 01",
+"Urji Jalala",
+"Waltaha Gudina",
+"Yatu",
+"Bareda",
+"Bidibora",
+"Fechatu Town",
+"Iftu",
+"Kere",
+"Kufa  Bobasa",
+"Mulata",
+"Nagaya Bobasa",
+"Tuta Kanisa",
+"Burka Gemechu",
+"Chafe Aneni",
+"Dado",
+"Kurka Oda Gelan",
+"Birbirsa",
+"Girawa 01",
+"Lafto Harawa",
+"Magala Doguu",
+"Burka 01",
+"Biqa",
+"Goro Gutu",
+"Ido Jalala",
+"Ifa Dhaba",
+"Lafto",
+"Makanisa",
+"Nadni",
+"Warji Jalala",
+"Abubeker Sadiq Santala",
+"Awubare",
+"Barite",
+"Bilisuma",
+"Biyo Nagaya",
+"Dayfaras",
+"Gafra Guda",
+"Goro Sayoo",
+"Hawa Santala",
+"Kabso",
+"Madaro",
+"Miawa",
+"Misra",
+"Muhiyedin",
+"Nagaya",
+"Nursalam",
+"Oda Nagaya",
+"Oda Santala",
+"Onaya",
+"Hamaresa",
+"Becheke",
+"Biftu Geda",
+"Ifa Oromia",
+"Kuro Jalela",
+"Tinike",
+"Tuji Gebisa",
+"Ale",
+"Anano Mite",
+"Bedassa",
+"Ejersa Goro 01",
+"Gara Abdulla",
+"Kombolcha 02",
+"Goro Garbi",
+"Dhaba Kanisa",
+"Dhaga Balo",
+"Jaja Town",
+"Megala Harew",
+"Mulisa Haka",
+"Tokuman Kane",
+"Felmetu Seba",
+"Hidhtu Seba",
+"Meta kebele 01",
+"Huse",
+"Meyu Muluke",
+"Biyo Woraba",
+"Lenca",
+"Mudhi Bali",
+"Qerensa",
+"Roba",
+"Terkanfeta",
+"Aneno",
+"Burka Anani",
+"Sebula",
+"Ejerti",
+"Kurfa Wachu",
+"Mechara Town",
+"Merdida",
+"Doba 01 kebele",
+"Med Bilisuma",
+"Gelames 01 Kebele",
+"Ibsa",
+"Korke",
+"Remeti",
+"Mesela Kebele 01",
+"Buri Mulu",
+"Deneba Hunde Misoma",
+"Dirba",
+"Mieso kebele 01",
+"Mieso kebele 01",
+"ManaGabo"
+    ];
+    $( "#B73ResSubcl,#B72ResClan,#B8Region,#B8Zone,#B8Woreda,#B8Kebele,#B9Region,#B9Zone,#B94Kebele" ).autocomplete({
+      source: availableTags,
+	  minLength: 0
+    });
+	
+	/*B72ResClan" name="B72ResClan"><b>2. Clan</b><br/><br/>
+<input type="text" id="B73ResSubcl*/
+	// Overrides the default autocomplete filter function to search only from the beginning of the string
+	    $.ui.autocomplete.filter = function (array, term) {
+        var matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex(term), "i");
+        return $.grep(array, function (value) {
+            return matcher.test(value.label || value.value || value);
+        });
+    };
+	
+	
+  } );
+  </script>
+<script>
+//this is to reset the all textbox
+function resetTextBox(yobj)
+  {
+   $(yobj).find(':input').each(function() 
+ {
+ switch(this.type)
+ {case 'number':
+ case 'text':
+ case 'textarea':
+ $(this).val('');
+ break;
+ 
+ }
+ });
+  }
+  function yoni_radio_for_reset()
+  {
+     $('input[name=E351WHN][value=6]').prop('checked', 'checked');
+$('input[name=E43REDRET][value=6]').prop('checked', 'checked');
+ $('input[name=E1SOLDIS][value=5]').prop('checked', 'checked');
+  resetRadioButton();
+  }
+  //this function to reset radio buttons
+function resetRadioButton()
+  {//this function is used to reset the radio button value on sectio c6
+  var c6val=['C61HS','C62VS','C63HOUS','C64EDU','C65CLWAT','C66WATCOLST','C67WATLIV',
+'C68HUSANT','C69LANFARM','C610LANOWN','C611SAFTSECU','C612LIV',
+'C613ACCMKT','C614ACCFDNU','C615ACNATRES','C616PUBAFF','C617ACBANK',
+'C618ACDOC','C619ACINFO','C620NFI','C621PROTECTION','C622LEGAL',
+'C623PSYCHOSOCIAL'];
+ $.each(c6val, function(index, value) {
+  $('input[name='+value+'][value=3]').prop('checked', 'checked');
+  
+		
+	
+ });
+   $('input[name=C624OTH][value=5]').prop('checked', 'checked');
+
+   
+  }
+
+
+
+//This block of script work for name collection table 
+//done on 04-oct-2018
+
+ function Remove(button) 
+ {
+            //Determine the reference of the Row using the Button.
+            var row = $(button).closest("TR");
+            var name = $("TD", row).eq(0).html();
+			
+			 var table = $("#tblDemographic")[0];
+			 //var table = $(table_id)[0];
+			
+                //Delete the Table row using it's Index.
+                table.deleteRow(row[0].rowIndex);
+            
+        };
+		
+//to remove a c4 onformation 		
+ function Remove_C4(button) 
+ {
+            //Determine the reference of the Row using the Button.
+            var row = $(button).closest("TR");
+            var name = $("TD", row).eq(0).html();
+			
+			 var table = $("#tbl_C4_Dependency")[0];
+			 //var table = $(table_id)[0];
+			
+                //Delete the Table row using it's Index.
+                table.deleteRow(row[0].rowIndex);
+            
+        };
+</script>		 
+		 
+		 
+		 
+		 
+<script src="jquery-ui-1.12.1/jquery-ui.js"></script>
+  <link rel="stylesheet" href="jquery-ui-1.12.1/jquery-ui.css">
+<script>
+  $( function() {
+   // $( "#datepicker" ).datepicker().formatDate( "D dd-M-yy", new Date());
+	
+$("#A2DatInt_datepicker").datepicker({/*minDate: new Date(2018, 12-1, 25),*/
+  dateFormat: 'yy-mm-dd'
+});
+$("#B10Disdate_datepicker").datepicker({/*minDate: new Date(2018, 12-1, 25),*/
+  dateFormat: 'yy-mm-dd'
+});
+//$.datepicker.formatDate( "D dd-M-yy", new Date()) 
+	// $("#datepicker").formatDate( "yy-mm-dd", new Date( 2007, 1 - 1, 26 ) );
+  } );
+  </script>
+	<script type="text/javascript">
+(function($) {
+ $(document).ready(function() {
+ 
+
+$('input[type=radio][name=E351WHN]').on('change',
+ function(){console.log($(this).val());});
+$('input[type=radio][name=E43REDRET]').on('change',
+ function(){console.log($(this).val());}); 
+ 
+ 
+ 
+ 
+ $(document).bind("contextmenu",function(e){
+   return false;
+ });
+
+ 
+$(document).bind('keydown', function(e) {
+  if(e.ctrlKey && (e.which == 83)) {
+    //e.preventDefault();
+    alert('Ctrl+S Not Allowed');
+    return false;
+  }
+});
+ //make upper case on formnumber and pcode box
+ 	jQuery('#formnum,#pcode').keyup(function() {
+		$(this).val($(this).val().toUpperCase());
+	});
+//a submit button click effect 
+ $('#userClick').click(function() {
+ 
+ var AllData=JSON.stringify($('#target').serializeArray());//$('#target').serialize();
+//------- for name collection 
+ var name_data=[];
+ $("#tblDemographic").find(':input').each(function(){
+ if(this.type=='text'||this.type=='number')
+		name_data.push($(this).val());
+		//console.log($(this).val());
+		
+		 });
+	if(jQuery.isEmptyObject(name_data))
+{
+console.log('name data find empity');
+name_data=new Array('NULL','NULL','NULL','NULL','NULL','NULL');
+
+}	
+//------- for name collection	
+//------- movement history collection
+
+ var demographic_data=[];
+ $("#MobilityHistory").find(':input').each(function(){
+ if(this.type=='text')
+		{
+		if($(this).val()!="")
+		{
+			demographic_data.push($(this).val());}
+		else
+		{demographic_data.push('NULL');}
+		//console.log($(this).val());
+		}
+		 });	
+//------- movement history  collection	
+//--------c4 dependency collection
+
+ 
+ var c4_dependency_data=new Array();
+ 
+ $("#tbl_C4_Dependency tr").each(function(){
+ var row=[];
+ var cell={};
+ $(this).find('td').each(function(){
+ 
+ //cell[$(this).attr('class')]=$(this).html();
+ //cell["value"]=$(this).find('input').val();
+ //console.log($(this).find('input').val());
+ row.push($(this).find('input').val());
+ });
+ row.splice(0,1);
+
+if(!jQuery.isEmptyObject(row))
+ c4_dependency_data.push(row);
+ });
+ 
+ var c4jsondata=JSON.stringify(c4_dependency_data);
+ 
+ console.log(c4jsondata);
+ 
+
+//--------c4 dependency collection end here	 
+console.log("Alldata"+AllData);
+console.log("name data "+name_data);
+console.log("demographic "+demographic_data);
+
+console.log("this is short code"+userShortCode);
+ $.ajax({ 
+            type: 'POST',
+            url: 'dataprocessor.php', 
+            data: {dt:AllData,ndt:name_data,ddt:demographic_data,usc:userShortCode,uln:user_last_form_num,c4_data:c4jsondata},
+			success: function (response) {
+			console.log("you save it !!"+response);
+			var x=response.split('#');
+			//if(response.substring(0,4)=="true")
+			if(x[0]=="true")
+		 {
+			sessionStorage.setItem('key', x[2]);
+			console.log(x[2]);
+			yoni_formreset();//instead of reset i remove a component
+			//$('#target')[0].reset();
+                alert("-- >> "+x[1]);
+              }else{alert("not saved");}
+
+				}
+        });
+
+ });
+ 
+ //edit button clicked
+ $('#updateF').click(function() {
+ $.ajax({ 
+            type: 'POST',
+            url: 'editform.php', 
+            data: {uscfe:userShortCode},
+			success: function (response) {
+			//alert(response);
+			console.log(response);
+                document.getElementById('cities').innerHTML = "<select id='editable_Forms'>" + response + "</select>";
+               }
+        });
+
+ });
+ 
+  //edit button clicked
+ $('#makec').click(function() {
+ var kk;
+ var userEditable_code=$('#editable_Forms').val();
+ console.log("This is the selected form  ==="+userEditable_code);
+ $.ajax({ 
+            type: 'POST',
+            url: 'populate.php', 
+            data: {editable_form_id:userEditable_code},
+			success: function (response) {
+			
+			
+						
+			var replayAT=response.split('#');
+			console.log(response);
+			var nameData=$.parseJSON(replayAT[1]);
+			var allData=$.parseJSON(replayAT[0]);
+			$('#tblDemographic tbody > tr').empty();
+
+			$("#tblDemographic").append(replayAT[2]);
+			console.log(nameData);
+			
+			
+			//this one is for name purpose
+			$.each(nameData, function (uindex, uvalue){
+				console.log(uindex+" over " +uvalue);
+					$.each(uvalue, function (lindex, lvalue){
+						var indicator='.'+lindex+uindex;
+						console.log(indicator);
+						if(lvalue!="NULL")
+						$(indicator).val(lvalue);
+						else
+						$(indicator).val('');
+					});			
+			});
+			
+			
+			
+	$.each(allData, function (index, value) {
+		/*if("E1SOLDIS"==index)
+		{
+		$('input[name=E1SOLDIS][value='+value+']').prop('checked', 'checked');
+		}*/
+		
+						if(
+						index=='A7ConsRes'||index=='B3Sexres'||
+						index=='B5EduStat'||index=='B6MarStat'||
+						index=='E351WHN'||index=='E43REDRET'||
+						index=='E1SOLDIS'||index=='C61HS'|| 
+						index=='C62VS'||index=='C63HOUS'|| 
+						index=='C64EDU'||index=='C65CLWAT'|| 
+						index=='C66WATCOLST'||index=='C67WATLIV'|| 
+						index=='C68HUSANT'||index=='C69LANFARM'|| 
+						index=='C610LANOWN'||index=='C611SAFTSECU'|| 
+						index=='C612LIV'||index=='C613ACCMKT'|| 
+						index=='C614ACCFDNU'||index=='C615ACNATRES'|| 
+						index=='C616PUBAFF'||index=='C617ACBANK'|| 
+						index=='C618ACDOC'||index=='C619ACINFO'|| 
+						index=='C620NFI'||index=='C621PROTECTION'|| 
+						index=='C622LEGAL'||index=='C623PSYCHOSOCIAL'||index=='C624OTH')
+						{
+							$('input[name='+index+'][value='+value+']').prop('checked', 'checked');
+						}//if block
+						else
+						{
+							$("[name='"+index+"']").val(value);
+						
+						}//else block
+				});//all data block
+	$( "#resetbtn" ).prop( "disabled", false );
+	$( "#userClick" ).prop( "disabled", true );
+               }//success block
+        });//ajax block
+
+ });//click listener block 
+ 
+ 	
+
+
+
+
+	//code 54 end here
+ 
+  $('#resetbtn').click(function() {
+  
+  var AllData=JSON.stringify($('#target').serializeArray());
+ var name_data=[];
+ $("#tblDemographic").find(':input').each(function(){
+ if(this.type=='text'||this.type=='number')
+		{name_data.push($(this).val());	}	
+	/*else
+		{name_data.push('NULL');}	*/
+		 });
+	if(jQuery.isEmptyObject(name_data))
+{
+name_data=new Array('NULL','NULL','NULL','NULL','NULL','NULL');
+
+}	
+//------- for name collection	
+//------- movement history collection
+
+ var demographic_data=[];
+ $("#MobilityHistory").find(':input').each(function(){
+ if(this.type=='text'||this.type=='number')
+		{
+		if($(this).val()!="")
+		{
+			demographic_data.push($(this).val());}
+		else
+		{demographic_data.push('NULL');}
+		//console.log($(this).val());
+		}
+		 });	
+//------- movement history  collection		 
+console.log("Alldata"+AllData);
+console.log("name data "+name_data);
+console.log("demographic "+demographic_data);
+
+ $.ajax({ 
+            type: 'POST',
+            url: '1recordupdater.php', 
+            data: {dt:AllData,ndt:name_data,ddt:demographic_data,usc:userShortCode,uln:user_last_form_num},
+			success: function (response) {
+			console.log("you save it !!"+response);
+			var x=response.split('#');
+			//if(response.substring(0,4)=="true")
+			if(x[0]=="true")
+		 {
+			
+			
+                alert(" You Successfully Update the record ");
+				
+              }
+			  else
+			  {
+				alert("not saved");
+			  
+			  }
+		 window.location.reload();
+				}
+        });
+ 
+ 
+ 
+ });
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ // sectionE1 button sellection and it response 
+ //script 10
+ $('input[type=radio][name=E1SOLDIS]').on('change',
+ function(){
+ console.log($(this).val());
+ 
+ if($(this).val()==1)
+ { 
+var disable_r1=["#secE31","#secE32","#secE33","#secE34","#secE35","#secE41","#secE42","#secE43","#secE44","#secE45","#secE5"];
+var enable_r1=["#secE21","#secE22","#secE23","#secE24"];
+ yoni_enable_disable_focus(enable_r1,disable_r1,'E211BL');
+	}
+else if($(this).val()==2)
+ {
+
+var disable_r1=["#secE21","#secE22","#secE23","#secE24","#secE41","#secE42","#secE43","#secE44","#secE45","#secE5"];
+var enable_r1=["#secE31","#secE32","#secE33","#secE34","#secE35"];  
+  yoni_enable_disable_focus(enable_r1,disable_r1,'E311CAUS');
+ 
+	}
+else if($(this).val()==3)
+ {
+   
+  var disable_r1=["#secE21","#secE22","#secE23","#secE24","#secE31","#secE32","#secE33","#secE34","#secE5","#secE35"];
+var enable_r1=["#secE41","#secE42","#secE43","#secE44","#secE45"];  
+  yoni_enable_disable_focus(enable_r1,disable_r1,'E411GOV');
+  
+	}
+else if($(this).val()==4)
+ {
+
+  var disable_r1=["#secE21","#secE22","#secE23","#secE24","#secE31","#secE32","#secE33","#secE34","#secE35","#secE41","#secE42","#secE43","#secE44","#secE45"];
+var enable_r1=["#secE5"];  
+  yoni_enable_disable_focus(enable_r1,disable_r1,'E511DEC');
+  
+	}
+ });
+ //script 10 end here
+ 
+ /*
+  $('input[type=radio][name=E43REDRET]').on('change',
+ function(){$("#E43REDRET").val($(this).val());});
+ //$("#E351WHN").val($("[name='E351WHN']:checked").val());//value for  E351WHN
+  //$("#E43REDRET").val($("[name='E43REDRET']:checked").val());//value for  E351WHN
+*/
+  
+  
+  
+  
+  // code 55 The following code try to reset the value of the object
+ 
+$("#secC6reset_b,#secC2reset_b,#secD1reset_b,#secD2reset_b,#secE21reset_b,#secE22reset_b,#secE23reset_b,#secE24reset_b,#secE31reset_b,#secE32reset_b,#secE33reset_b,#secE34reset_b,#secE41reset_b,#secE42reset_b,#secE44reset_b,#secE45reset_b,#secE5reset_b").click(function(e){
+  
+  console.log('you are about to reset '+e.target.id);
+  var eventID=e.target.id;
+  
+  switch(eventID)
+ {case 'secC6reset_b':resetRadioButton();break;
+ case "secC2reset_b":resetTextBox("#secC2");break;//
+ case "secD1reset_b":resetTextBox("#secD1");break;//
+ case "secD2reset_b":resetTextBox("#secD2");break;//
+ case "secE21reset_b":resetTextBox("#secE21");break;//resetTextBox("#secE21");
+ 
+ case 'secE42reset_b':resetTextBox("#secE42");break;//
+ case 'secE44reset_b':resetTextBox("#secE44");break;
+ case 'secE45reset_b':resetTextBox("#secE45");break;
+ case 'secE5reset_b':resetTextBox("#secE5");break;
+ 
+ case 'secE32reset_b':resetTextBox("#secE32");break;
+ case 'secE33reset_b':resetTextBox("#secE33");break;
+ case 'secE34reset_b':resetTextBox("#secE34");break;
+ case 'secE41reset_b':resetTextBox("#secE41");break;
+ 
+ case 'secE22reset_b':resetTextBox("#secE22");break;
+ case 'secE23reset_b':resetTextBox("#secE23");break;
+ case 'secE24reset_b':resetTextBox("#secE24");break;
+ case 'secE31reset_b':resetTextBox("#secE31");break;
+ //$(this).val('');
+
+ 
+ }
+  /*if(eventID=="secC6reset_b")
+  {
+  resetRadioButton();
+  }
+  else if(eventID=="secC2reset_b")
+  {
+  resetTextBox("#secC2");
+  }
+  else if(eventID=="secD1reset_b")
+  {
+  resetTextBox("#secD1");
+  }
+  else if(eventID=="secD2reset_b")
+  {
+  resetTextBox("#secD2");
+  }*/
+  //resetFormElements($("#secC6"));
+  });
+
+/*
+function resetRadioButton()
+  {//this function is used to reset the radio button value on sectio c6
+  var c6val=['C61HS','C62VS','C63HOUS','C64EDU','C65CLWAT','C66WATCOLST','C67WATLIV',
+'C68HUSANT','C69LANFARM','C610LANOWN','C611SAFTSECU','C612LIV',
+'C613ACCMKT','C614ACCFDNU','C615ACNATRES','C616PUBAFF','C617ACBANK',
+'C618ACDOC','C619ACINFO','C620NFI','C621PROTECTION','C622LEGAL',
+'C623PSYCHOSOCIAL','C624OTH'];
+ $.each(c6val, function(index, value) {
+  $('input[name='+value+'][value=3]').prop('checked', 'checked');
+ });
+   
+  }*/
+ /*10-oct-2018 function resetTextBox(yobj)
+  {
+   $(yobj).find(':input').each(function() 
+ {
+ switch(this.type)
+ {case 'number':
+ case 'text':
+ case 'textarea':
+ $(this).val('');
+ break;
+ 
+ }
+ });
+  }*/
+  //this function is uzlz
+ function resetFormElements(frm)
+ {
+ $(frm).find(':input').each(function() 
+ {
+ switch(this.type)
+ {/*case 'password':
+ case 'select-multiple':
+ case 'select-one':
+ case 'text':
+ case 'textarea':
+ $(this).val('');
+ break;*/
+ case 'checkbox':
+ case 'radio':
+ //this.checked = false;
+ //this.attr("selectedIndex",0);
+ $('input[name=C62VS][value=1]').prop('checked', 'checked');
+break;
+ }
+ });}
+
+ 
+ 
+ 
+ 
+ //code 55 end here
+ 
+ //code 54 the folowing script controle the input on section c1
+ $("#secC1").find("input").focusout(function(){
+		yoniValidation($(this),1,13);
+		
+		console.log($(this).val());
+		 });
+  $("#secD1").find("input").focusout(function(){
+		yoniValidation($(this),1,23);
+		
+		console.log($(this).val());
+		 });
+  $("#secD2").find("input").focusout(function(){
+		yoniValidation($(this),1,23);
+		
+		console.log($(this).val());
+		 });	 
+$("#secE22").find("input").focusout(function(){
+		yoniValidation($(this),1,23);
+		
+		console.log($(this).val());
+		 });	 
+  $("#secE21").find("input").focusout(function(){
+		yoniValidation($(this),1,18);
+		
+		console.log($(this).val());
+		 }); 
+
+
+  $("#secE22").find("input").focusout(function(){
+		yoniValidation($(this),1,23);
+		
+		console.log($(this).val());
+		 }); 		 
+
+  $("#secE23").find("input").focusout(function(){
+		yoniValidation($(this),1,13);
+		
+		console.log($(this).val());
+		 });		 
+  $("#secE24").find("input").focusout(function(){
+		yoniValidation($(this),1,8);
+		console.log($(this).val());
+		 });			 
+  $("#secE31").find("input").focusout(function(){
+		yoniValidation($(this),1,21);
+		console.log($(this).val());
+		 });
+	$("#secE32").find("input").focusout(function(){
+		yoniValidation($(this),1,28);
+		console.log($(this).val());
+		 });
+		 $("#secE33").find("input").focusout(function(){
+		yoniValidation($(this),1,12);
+		console.log($(this).val());
+		 });
+		  $("#secE34").find("input").focusout(function(){
+		yoniValidation($(this),1,8);
+		console.log($(this).val());
+		 });
+		 $("#secE41").find("input").focusout(function(){
+		yoniValidation($(this),1,16);
+		console.log($(this).val());
+		 });
+		 $("#secE42").find("input").focusout(function(){
+		yoniValidation($(this),1,17);
+		console.log($(this).val());
+		 });
+		 $("#secE44").find("input").focusout(function(){
+		yoniValidation($(this),1,12);
+		console.log($(this).val());
+		 });
+		 $("#secE45").find("input").focusout(function(){
+		yoniValidation($(this),1,12);
+		console.log($(this).val());
+		 });
+		 $("#secE51").find("input").focusout(function(){
+		yoniValidation($(this),1,6);
+		console.log($(this).val());
+		 });
+
+
+  
+  
+  
+  
+  
+  
+  
+ 
+
+ //});
+ 
+  //-----------the following function deal with section b12 for table organization
+ //-----this added on 04-oct-2018
+  $(".add-row").click(function(){
+		console.log("hello sir");
+           
+            var markup = 
+"<tr><td><input type='Button' value='remove' onclick='Remove(this);' name='record'></td>"+
+"<td><input type='text' class='nput' value=''/></td>"+
+"<td><input type='number' class='nput' onfocusout='yoniValidation(this,1,2)' value=''/></td>"+
+"<td><input type='number' class='nput' onfocusout='yoniValidation(this,1,100)' value=''/></td>"+
+"<td><input type='number' class='nput' onfocusout='yoniValidation(this,1,6)' value=''/></td>"+
+"<td><input type='number' class='nput' onfocusout='yoniValidation(this,1,9)' value=''/></td>"+
+"<td><input type='number' class='nput' onfocusout='yoniValidation(this,1,12)' value=''/></td>"+
+"</tr>";
+            $("#tblDemographic").append(markup);
+        });
+ //this pice of code help to add c4
+  $(".add-c4_record").click(function(){
+		console.log("hello sir");
+           
+            var markup = 
+"<tr><td><input type='Button' value='remove' onclick='Remove_C4(this);' name='record'></td>"+
+"<td><input type='number' class='nput' onfocusout='yoniValidation(this,1,100)' value=''/></td>"+
+"<td><input type='number' class='nput' onfocusout='yoniValidation(this,1,2)' value=''/></td>"+
+"<td><input type='text' class='nput' value=''/></td>"+
+"<td><input type='text' class='nput' value=''/></td>"+
+"<td><input type='text' class='nput' value=''/></td>"+
+"<td><input type='text' class='nput' value=''/></td>"+
+"<td><input type='text' class='nput' value=''/></td>"+
+"<td><input type='text' class='nput' value=''/></td>"+
+"</tr>";
+            $("#tbl_C4_Dependency").append(markup);
+        });
+
+
+ 
+        // Find and remove selected table rows
+       /* 
+	   13-oct-2018 to remove
+	   $(".delete-row").click(function(){
+            $("#tblDemographic").find('input[name="record"]').each(function(){
+            	if($(this).is(":checked")){
+                    $(this).parents("tr").remove();
+                }
+            });
+        });
+		*/
+
+ //---end table organization function 
+ 
+ //----the following function deals with c4 radio button objects enable and disable
+ $('input[type=radio][name=C3hhsep]').on('change',
+ function(){
+ if($(this).val()==1)
+ //document.getElementById("C4LIST").disabled='true';
+  document.getElementById('C4list').disabled=false;
+
+ else
+ //document.getElementById("C4LIST").disabled='false';
+ document.getElementById('C4list').disabled=true;
+ console.log("section C4 disabled "+$(this).val());
+ 
+ }); 
+ //----end here
+ });
+})(jQuery);
+
+	</script>
+	
+		<style type="text/css">
+		
+		body {
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+			height: 100%; 
+			max-height: 100%; 
+			font-family:Sans-serif;
+			line-height: 1.5em;
+		}
+
+		main {
+			position: fixed;
+			top: 50px; /* Set this to the height of the header */
+			bottom: 50px; /* Set this to the height of the footer */
+			left: 200px; 
+			right: 200px;
+			overflow: auto; 
+			background: #fff;
+		}
+				
+		#header {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 50px; 
+			overflow: hidden; /* Disables scrollbars on the header frame. To enable scrollbars, change "hidden" to "scroll" */
+			background: #BCCE98;
+		}
+
+		#footer {
+			position: absolute;
+			left: 0;
+			bottom: 0;
+			width: 100%;
+			height: 50px; 
+			overflow: hidden; /* Disables scrollbars on the footer frame. To enable scrollbars, change "hidden" to "scroll" */
+			background: #BCCE98;
+		}
+				
+		#left {
+			position: absolute; 
+			top: 50px; /* Set this to the height of the header */
+			bottom: 50px; /* Set this to the height of the footer */
+			left: 0; 
+			width: 200px;
+			overflow: auto; /* Scrollbars will appear on this frame only when there's enough content to require scrolling. To disable scrollbars, change to "hidden", or use "scroll" to enable permanent scrollbars */
+			background: #DAE9BC; 		
+		}
+
+		#right {
+			position: absolute; 
+			top: 50px; /* Set this to the height of the header */
+			bottom: 50px; /* Set this to the height of the footer */
+			right: 0; 
+			width: 200px;
+			overflow: auto; /* Scrollbars will appear on this frame only when there's enough content to require scrolling. To disable scrollbars, change to "hidden", or use "scroll" to enable permanent scrollbars */
+			background: #F7FDEB; 		
+		}
+				
+		.innertube {
+			margin: 15px; /* Provides padding for the content */
+		}
+		
+		p {
+			color: #555;
+		}
+
+		nav ul {
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+		}
+		
+		nav ul a {
+			color: darkgreen;
+			text-decoration: none;
+		}
+				
+		/*IE6 fix*/
+		* html body{
+			padding: 50px 200px 50px 200px; /* Set the first value to the height of the header, the second value to the width of the right column, third value to the height of the footer, and last value to the width of the left column */
+		}
+		
+		* html main{ 
+			height: 100%; 
+			width: 100%; 
+		}
+
+		</style>
+<style type="text/css">
+	table.table-style-two {
+		font-family: verdana, arial, sans-serif;
+		font-size: 11px;
+		color: #333333;
+		border-width: 1px;
+		border-color: #3A3A3A;
+		border-collapse: collapse;
+	}
+ 
+	table.table-style-two th {
+		border-width: 1px;
+		padding: 8px;
+		border-style: solid;
+		border-color: #517994;
+		background-color: #B2CFD8;
+	}
+ 
+	table.table-style-two tr:hover td {
+		background-color: #DFEBF1;
+	}
+ 
+	table.table-style-two td {
+		border-width: 1px;
+		padding: 8px;
+		border-style: solid;
+		border-color: #517994;
+		background-color: #ffffff;
+	}
+	.apdiv{
+	position:sticky;
+	width:100px;
+	height:31px;
+	left:0;
+	top:50px;
+	background-color: #999900;
+	float:right;
+	}
+	
+	
+</style>
+	</head>
+	
+	<body onload="yoni_formreset()">		
+
+		<header id="header">
+			<div class="innertube">
+				<p>Welcome ...</p>
+			</div>
+		</header>
+				
+		<main>
+			<div class="innertube">
+				
+				<h1>NFI Data Collection v0.1</h1>
+				<p>
+				<!--<script>generateText(300)</script>-->
+				<div id="div1"></div>
+				<!-- Start -->
+<form id="target" method="post" action="">
+<!--<p>Date: <input type="text" id="datepicker"></p>-->
+<section id="secA">
+<input type="text" id="formnum" name="FormNumber"><b>Put FormNumber</b><br/><br/>
+<input type="text" id="pcode" name="A1FormId"><b>A.1 P_code</b><br/><br/>
+<input type="text" id="A2DatInt_datepicker" name="A2DatInt"><b>A.2 Data of Interview(YYYY-MM-DD)</b><br/><br/>
+<input type="text" name="A3IntDur"><b>A.3 Interview Druation</b><br/><br/>
+<input type="text" name="A4Plcint"><b>A.4 Place Location of Interview</b><br/><br/>
+
+<select name="A5NameEn" size="1">
+  <option value="0" selected="selected">Select Enumerator</option>
+<option value="20">Kader Abdi</option>
+<option value="21">Nimco Ahmed Yasin</option>
+<option value="22">Mohamed Nur Good</option>
+<option value="23">Daud Hussein Adawe</option>
+<option value="24">Seada Mohamud</option> 
+<option value="25">Yurub Abdilahi</option>
+<option value="26">Abdiaziz Sheik Mukter</option>
+<option value="27">Ibrahin Hassan Shafi</option>
+<option value="28">Farhan Abdi Odowa</option>
+<option value="29">Abdikadir Mohamed Diriye</option>
+<option value="30">Hasen Muse Ibrahim</option>
+<option value="31">Seid Ibrahim Omer</option>
+<option value="32">Abdikani Mahmed Ahmed</option>
+<option value="33">Mohamud Farah Hufane</option>
+<option value="34">Nimo Mahamed</option>
+<option value="35">Ahmed Mohamoud Abdi</option>
+<option value="36">Yusuf Ahmed</option>
+<option value="37">Abdikadir Ahmed</option>
+<option value="38">Ahmed Kowdan</option>
+<option value="39">Abdirahman Ahmed</option>
+<option value="40">Kader Mahamed</option>
+<option value="41">Ahmed Sheik Mahamed</option>
+<option value="42">Yusuf Abdi</option>
+<option value="43">Nur Mohamed</option>
+<option value="44">Abdi Yusuf</option>
+<option value="45">Seid Abdi</option>
+<option value="46">Abdifatah Hasan</option>
+<option value="47">Abdikadir Muhumed</option>
+
+</select>
+<b>A.5Name of Enumerator</b><br/><br/>
+<select name="A6NamtemLed" size="1">
+  <option value="0" selected="selected">Select Supervisor</option>
+  <option value="1">Wagari Wakjira</option>
+  <option value="2">Mohammed Mussa</option>
+  <option value="3">Anbesie Ergefie</option>
+
+</select><b>A.6 Name of team Leader</b><br/><br/>
+
+<p>A.7 Consent of the respondent to participate(Y or N)<br />
+<input type="radio" name="A7ConsRes" value="1" checked="true" /> Yes<input type="radio" name="A7ConsRes" value="2" /> No<input type="radio" name="A7ConsRes" value="0" /> NotSpecified<br />
+</p>
+</section>
+<section id="secB">
+<p>Secton B</p><br/>
+<p>Background information of the HouseHold</p><br/>
+
+<input type="text" name="B1Namres"><b>B.1 Name of Respondent</b><br/><br/>
+<input type="number" onfocusout="yoniValidation(this,10,150)" name="B2Ageres"><b>B.2 Age of Respondent</b><br/><br/>
+<!--<input type="text" name="B3Sexres"><b>B.3 Sex of Respondent</b><br/><br/>B4KebId-->
+<p>B.3 Sex of Respondent<br />
+<input type="radio" name="B3Sexres" value="1" checked="true" /> Male<input type="radio" name="B3Sexres" value="2" /> Female<input type="radio" name="B3Sexres" value="0" /> NotSpecified<br />
+</p>
+
+<input type="text" name="B4KebId"><b>B.4 Kebele id</b><br/><br/>
+</section>
+<section id="secB5">
+<p>Secton B.5</p>
+<p>Educational Status</p><br/>
+<!--<input type="text" name="B5EduStat"><b></b><br/><br/>-->
+<input type="radio" name="B5EduStat" value="1" /> Read and Write<br/>
+<input type="radio" name="B5EduStat" value="2" /> First Cycle<I>(1-4 grade level)</I><br/>
+<input type="radio" name="B5EduStat" value="3" /> Second Cycle<I>(5-8 grade level)</I><br/>
+<input type="radio" name="B5EduStat" value="4" /> High School<I>(9-10 grade level)</I><br/>
+<input type="radio" name="B5EduStat" value="5" /> Preparatory<I>(10+1,10+2,10+3,10+4)</I><br/>
+<input type="radio" name="B5EduStat" value="6" /> Diploma<br/>
+<input type="radio" name="B5EduStat" value="7" /> Degree and above<br/>
+<input type="radio" name="B5EduStat" value="8" /> Kuran<br/>
+<input type="radio" name="B5EduStat" value="9"  checked="true" /> Non-literate<br/>
+<input type="radio" name="B5EduStat" value="0" /> NotSpecified<br/>
+
+</section>
+<section id="secB6">
+
+<p>Secton B.6</p>
+<p>Merital status(Write the applicable option) </p><br/>
+
+<input type="radio" name="B6MarStat" value="1" checked="true" /> Single<br/>
+<input type="radio" name="B6MarStat" value="2" /> Betrothed<br/>
+<input type="radio" name="B6MarStat" value="3" /> Married<br/>
+<input type="radio" name="B6MarStat" value="4" /> Separated<br/>
+<input type="radio" name="B6MarStat" value="5" /> Divorced<br/>
+<input type="radio" name="B6MarStat" value="6" /> Widowed<br/>
+<input type="radio" name="B6MarStat" value="0" /> NotSpecified<br/>
+</section>
+<section id="secB7-11">
+<p>Secton B.7 Respondent Ethnic Identity</p>
+<input type="text" name="B71ResEtn"><b>1. Ethnicity</b><br/><br/>
+<input type="text" id="B72ResClan" name="B72ResClan"><b>2. Clan</b><br/><br/>
+<input type="text" id="B73ResSubcl" name="B73ResSubcl"><b>3. Sub-Clan </b><br/><br/>
+<p>Secton B.8 Place of Origin</p>
+<input type="text" id="B8Region" name="B81PoReg"><b>1. Region</b><br/><br/>
+<input type="text" id="B8Zone" name="B82PoZon"><b>2. Zone</b><br/><br/>
+<input type="text" id="B8Woreda" name="B83PoWor"><b>3. Woreda</b><br/><br/>
+<input type="text" id="B8Kebele" name="B84PoKeb"><b>4. Kebele/Village</b><br/><br/>
+<p>Secton B.9 Place of Last Displacement</p>
+<input type="text" id="B9Region" name="B91PDisReg" onfocusout="yoniValidation(this,1,3)" value="1"><b>1. Region</b><br/><br/>
+<input type="text" id="B9Zone" onfocusout="yoniValidation(this,1,3)" name="B92PDisZon" value="1"><b>2. Zone</b><br/><br/>
+<!--<input type="text" name="B93PDisWor">-->
+<select name="B93PDisWor" size="1">
+<option value="34">Fafan</option>
+<option value="35">Kebribayah</option>
+<option value="36">Siti</option>
+<option value="37">Shinile</option>
+<option value="38">Hadagalo</option>
+<option value="39">Gablalu</option>
+<option value="40">Erer</option>
+<option value="41">Gata-Biki</option>
+<option value="42">Afdem</option>
+<option value="43">Nogob</option>
+<option value="44">Elwayne</option>
+<option value="45">Garbo</option>
+<option value="46">Duhun</option>
+<option value="47">Segeg</option>
+<option value="48">Jarar</option>
+<option value="49">Degahbour</option>
+<option value="50">Gunagado</option>
+<option value="51">Gashamo</option>
+<option value="52">Daror</option>
+<option value="53">Dig</option>
+<option value="54">Aware</option>
+<option value="55">Bil’il Bur</option>
+<option value="56">Korahey</option>
+<option value="57">Dobowayn</option>
+<option value="58">Gogle</option>
+<option value="59">Kebridahar</option>
+<option value="60">Shebele</option>
+<option value="61">Gode</option>
+<option value="62">Adadle</option>
+<option value="63">Kelafo</option>
+<option value="64">Berano</option>
+<option value="65">Denan</option>
+<option value="66">Elel</option>
+<option value="67">Doollo</option>
+<option value="68">Warder</option>
+<option value="69">Daratole</option>
+<option value="70">Danod</option>
+<option value="71">Geladin</option>
+<option value="72">Afder</option>
+<option value="73">Hargele</option>
+<option value="74">Chereti</option>
+<option value="75">Bare</option>
+<option value="76">God God</option>
+<option value="77">Qoohle</option>
+</select>
+
+<b>3. Woreda</b><br/><br/>
+<input type="text" id="B94Kebele" name="B94PDisKV"><b>4. Kebele/Village</b><br/><br/>
+<p>Secton B.10 Date of Last displacement Wriet date,month and year</p>
+
+<input type="text" id="B10Disdate_datepicker" name="B10Disdate"><b>date-month-year</b><br/><br/>
+<input type="number" name="B101NOTRE" onfocusout="yoniValidation(this,1,1)"><b>Dont remember</b><br/><br/>
+
+<p>Secton B.11 Vulnerability<I>(Write the applicable option)</I></p>
+
+<input type="number" name="B11Vuln" onfocusout="yoniValidation(this,1,12)"><b>put vulnerability number</b><br/><br/>
+<input type="text" name="B1112OTH"><b>Other</b><br/><br/>
+</section>
+
+
+<section id="secB12">
+<p>Secton B.12 Demographic Characteristics of the household member</p><br/>
+
+<!--<input type="text" id="name" placeholder="Name">
+        <input type="text" id="email" placeholder="Email Address">-->
+    	<input type="button" class="add-row" value="Add Row">
+    
+    <table id='tblDemographic' class="table-style-two">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Name</th>
+                <th>Sex</th>
+				<th>Age</th>
+				<th>Merital Status</th>
+				<th>Education Status</th>
+				<th>Vulnerability</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+	
+</section>
+
+
+
+
+
+<section id="secB13">
+<p>Secton B.13 Displacment Histor Mobility trend</p><br/>
+
+
+    
+    <table id='MobilityHistory' class="table-style-two">
+        
+            <tr>
+                <th>Mobility</th>
+                <th>Location Name</th>
+				<th>Distrinct</th>
+				<th>Region</th>
+				<th>Reasons</th>
+				<th>Time</th>
+				<th>Meanse of transport</th>
+            </tr>
+			<tr>
+                <th>Place of Origin</th>
+                <th><input type="text" class="Kebeke0"></th>
+				<th><input type="text" class="woreda0"></th>
+				<th><input type="text" class="region0"></th>
+				<th><input type="text" class="reason0"></th>
+				<th><input type="text" class="tim0"></th>
+				<th><input type="text" class="transport0"></th>
+            </tr>
+			<tr>
+                <th>1st Movement</th>
+                <th><input type="text" class="Kebeke1"></th>
+				<th><input type="text" class="woreda1"></th>
+				<th><input type="text" class="region1"></th>
+				<th><input type="text" class="reason1"></th>
+				<th><input type="text" class="tim1"></th>
+				<th><input type="text" class="transport1"></th>
+            </tr>
+			<tr>
+                <th>2nd Movement</th>
+                <th><input type="text" class="Kebeke2"></th>
+				<th><input type="text" class="woreda2"></th>
+				<th><input type="text" class="region2"></th>
+				<th><input type="text" class="reason2"></th>
+				<th><input type="text" class="tim2"></th>
+				<th><input type="text" class="transport2"></th>
+            </tr>
+			<tr>
+                <th>3nd Movement</th>
+                <th><input type="text" class="Kebeke3"></th>
+				<th><input type="text" class="woreda3"></th>
+				<th><input type="text" class="region3"></th>
+				<th><input type="text" class="reason3"></th>
+				<th><input type="text" class="tim3"></th>
+				<th><input type="text" class="transport3"></th>
+            </tr>
+			<tr>
+                <th>Current Location</th>
+                <th><input type="text" class="Kebeke4"></th>
+				<th><input type="text" class="woreda4"></th>
+				<th><input type="text" class="region4"></th>
+				<th><input type="text" class="reason4"></th>
+				<th><input type="text" class="tim4"></th>
+				<th><input type="text" class="transport4"></th>
+            </tr>
+        
+    </table>
+	
+</section>
+
+
+
+
+
+
+<section id="secC1">
+<p>Secton C.1 What was the MAIN reason your household left place or origin<br/>
+<I>(Multiple options and rank with 1st,2nd,3rd)</I></p>
+<input type="number" name="C11FOOD"><b>1. Food Insecurity</b><br/><br/>
+<input type="number" name="C12FLOOD" ><b>2. Flood</b><br/><br/>
+<input type="number" name="C13CONF" ><b>3. Conflict</b><br/><br/>
+<input type="number" name="C14LAKWAT" ><b>4. Lack of Water</b><br/><br/>
+<input type="number" name="C15DISS" ><b>5.Disease outbreak(human or livestock)</b><br/><br/>
+<input type="number" name="C16LOSAST" ><b>6. Loss of assets and property</b><br/><br/>
+<input type="number" name="C17NOLIV"><b>7. No Livelihood</b><br/><br/>
+<input type="number" name="C18HUMASSCURSI"><b>8.Humanitarian Assistance here</b><br/><br/>
+<input type="number" name="C19WOROP"><b>9. work opportunity here</b><br/><br/>
+<input type="number" name="C110JINREL"><b>10. Join relatives or clan member</b><br/><br/>
+<input type="number" name="C111FEARAT"><b>11. Fear of attack/persecution</b><br/><br/>
+<input type="number" name="C112LAKASBS"><b>12. Lack of Access to basic service in place of origin</b><br/><br/>
+<input type="number" name="C113OTH"><b>13 other(specify)</b><br/><br/>
+</section>
+<section id="secC2">
+<p>Secton C.2 What was were the main losses that your household encountered as result of the above</p><br>the displacement Multi option<br/>
+<div id="secC2reset_b" class="apdiv">click to reset</div>
+
+<table class="table-style-two">
+      <tr>
+        <th>Losses</th>
+        <th>Quantity</th>
+        <th>Randk</th>
+        
+      </tr>
+      <tr>
+        <td>1.Cattle</td>
+        <td><input type="text" name="C21Q"/></td>
+        <td><input type="text" name="C21R"/></td>       
+      </tr>
+	  <tr>
+        <td>2.Camel</td>
+        <td><input type="text" name="C22Q"/></td>
+        <td><input type="text" name="C22R"/></td>       
+      </tr>
+	  <tr>
+        <td>3.Goats/Sheep</td>
+        <td><input type="text" name="C23Q"/></td>
+        <td><input type="text" name="C23R"/></td>       
+      </tr>
+	   <tr>
+        <td>4.Donkey</td>
+        <td><input type="text" name="C24Q"/></td>
+        <td><input type="text" name="C24R"/></td>       
+      </tr>
+	  <tr>
+        <td>5.Chicken</td>
+        <td><input type="text" name="C25Q"/></td>
+        <td><input type="text" name="C25R"/></td>       
+      </tr>
+	  <tr>
+        <td>6.Crops/Seeds/farm</td>
+        <td><input type="text" name="C26Q"/></td>
+        <td><input type="text" name="C26R"/></td>       
+      </tr>
+	  
+	  
+	   <tr>
+        <td>7.House</td>
+        <td><input type="text" name="C27Q"/></td>
+        <td><input type="text" name="C27R"/></td>       
+      </tr>
+	  <tr>
+        <td>8.Land</td>
+        <td><input type="text" name="C28Q"/></td>
+        <td><input type="text" name="C28R"/></td>       
+      </tr>
+	  <tr>
+        <td>9.HumanLife</td>
+        <td><input type="text" name="C29Q"/></td>
+        <td><input type="text" name="C29R"/></td>       
+      </tr>
+	   <tr>
+        <td>10.Social ties</td>
+        <td><input type="text" name="C210Q"/></td>
+        <td><input type="text" name="C210R"/></td>       
+      </tr>
+	  <tr>
+        <td>11.Employment</td>
+        <td><input type="text" name="C211Q"/></td>
+        <td><input type="text" name="C211R"/></td>       
+      </tr>
+	  <tr>
+        <td>12.Separation of Family</td>
+        <td><input type="text" name="C212Q_Separatedfamilymembers"/></td>
+        <td><input type="text" name="C212R"/></td>       
+      </tr>
+	   <tr>
+        <td>13.Farming tools</td>
+        <td><input type="text" name="C213Q"/></td>
+        <td><input type="text" name="C213R"/></td>       
+      </tr>
+	  <tr>
+        <td>14.Other specify</td>
+        <td><input type="text" name="C214Q"/></td>
+        <td><input type="text" name="C214R"/></td>       
+      </tr>
+</table>
+</section>
+<section id="secC3">
+<p>Secton C.3 is are there aany member of your household who has been separated<br/>from the rest of your family members as a result of displacement of your household?</p><br/><br/>
+
+
+<input type="radio" name="C3hhsep" value="1" /> Yes
+<input type="radio" name="C3hhsep" value="2" checked="true" /> No
+<input type="radio" name="C3hhsep" value="0" /> NotSpecified<br/>
+
+</section>
+<section id="secC4">
+<p>Secton C.4 if "yes" to c.3 please provide additional information on<br>(Enumerator to write down answers)</p><br/>
+<fieldset id="C4list" disabled>
+    <legend>C.4</legend>
+<input type="hidden" id="C41Agesep_id" name="C41Agesep">
+<input type="hidden" id="C42SexSep_id" name="C42SexSep">
+<input type="hidden" id="C43LocSep_id" name="C43LocSep">
+<input type="hidden" id="C44menCom_id" name="C44menCom">
+<input type="hidden" id="C45timesep_id" name="C45timesep">
+<input type="hidden" id="C46Relsepliv_id" name="C46Relsepliv">
+<input type="hidden" id="C47Any_id" name="C47Any">
+<input type="hidden" id="C48OtInfo_id" name="C48OtInfo">
+
+
+
+
+   	<input type="button" class="add-c4_record" value="Add Record">
+    
+    <table id='tbl_C4_Dependency' class="table-style-two">
+        <thead>
+            <tr>
+				<th>controler</th>
+                <th>Age</th>
+                <th>Sex</th>
+                <th>Location</th>
+				<th>communication</th>
+				<th>separete member</th>
+				<th>Relation</th>
+				<th>separation</th>
+				<th>other relevant info</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+
+</fieldset>
+
+</section>
+<section id="secC5">
+
+<p>Secton C.5 how would you describe you household living arrangement?<br></p>
+<select name="C5hhlivArng" type="number" placeholder="Min: 1, max: 9" min="1" max="9" size="1">Put the number of the arrangement
+  <option value="1">1.All members of the household live in one durable house</option>
+  <option value="2">2.All members of the household share space with other in community center</option>
+  <option value="3">3.All members of the household share communal house with other family</option>
+  <option value="4" selected="selected">4.In a small tukul</option>
+  <option value="5">5.Some members stay in a tukul but others live in host family</option>
+  <option value="6">6.Live in School empty building</option>
+  <option value="7">7.All members sleep in a tent</option>
+  <option value="8">8.No shelter sleep in the open</option>
+  <option value="9">9.other</option>
+</select><br/>
+<input type="text" name="C5Dur"><b>Duration</b><br/><br/>
+</section>
+<section id="secC6">
+
+<p>Secton C.6 how would you describe you household Access to the following basic services<br/></p>
+<div id="secC6reset_b" class="apdiv">click to reset</div>
+<table class="table-style-two">
+      <tr>
+        <th>Questiontion</th>
+        <th>a.Regular access</th>
+        <th>b.Partially access</th>
+        <th>c.no access</th>
+        <th>d.Do not Know</th>
+        <th>NONE</th>
+      </tr>
+      <tr>
+        <td>1.Health Service(treatment,medicine,vaccine,helth)</td>
+        <td><input type="radio" name="C61HS" value="1"  /></td>
+        <td><input type="radio" name="C61HS" value="2"  /></td>
+        <td><input type="radio" name="C61HS" value="3" checked="true" /></td>
+        <td><input type="radio" name="C61HS" value="4"  /></td>
+        <td><input type="radio" name="C61HS" value="0"  /></td>
+      </tr>
+      <tr>
+        <td>2.Veterinary service for livestock(treatment,medicine,vaccine,helth)</td>
+        <td><input type="radio" name="C62VS" value="1"  /></td>
+        <td><input type="radio" name="C62VS" value="2"  /></td>
+        <td><input type="radio" name="C62VS" value="3" checked="true" /></td>
+        <td><input type="radio" name="C62VS" value="4"  /></td>
+        <td><input type="radio" name="C62VS" value="0"  /></td>
+      </tr>
+      <tr>
+        <td>3.Housing(own house with enough space safety including shelter construction/renovation materials</td>
+        <td><input type="radio" name="C63HOUS" value="1"  /></td>
+        <td><input type="radio" name="C63HOUS" value="2"  /></td>
+        <td><input type="radio" name="C63HOUS" value="3" checked="true" /></td>
+        <td><input type="radio" name="C63HOUS" value="4"  /></td>
+        <td><input type="radio" name="C63HOUS" value="0"  /></td>
+      </tr>
+	  <tr>
+        <td>4.Education(for all school aged members of HH scholastic  material throughout cadamic season in close proximity</td>
+        <td><input type="radio" name="C64EDU" value="1"  /></td>
+        <td><input type="radio" name="C64EDU" value="2"  /></td>
+        <td><input type="radio" name="C64EDU" value="3" checked="true" /></td>
+        <td><input type="radio" name="C64EDU" value="4"  /></td>
+        <td><input type="radio" name="C64EDU" value="0"  /></td>
+      </tr>
+      <tr>
+	   
+        <td>5.Clean and Adequte water for drinking ,washing ,cookingEducation</td>
+        <td><input type="radio" name="C65CLWAT" value="1"  /></td>
+        <td><input type="radio" name="C65CLWAT" value="2"  /></td>
+        <td><input type="radio" name="C65CLWAT" value="3" checked="true" /></td>
+        <td><input type="radio" name="C65CLWAT" value="4"  /></td>
+        <td><input type="radio" name="C65CLWAT" value="0"  /></td>
+      </tr>
+      <tr>
+	   
+        <td>6.Adequate water source for livestick kit</td>
+        <td><input type="radio" name="C66WATCOLST" value="1"  /></td>
+        <td><input type="radio" name="C66WATCOLST" value="2"  /></td>
+        <td><input type="radio" name="C66WATCOLST" value="3" checked="true" /></td>
+        <td><input type="radio" name="C66WATCOLST" value="4"  /></td>
+        <td><input type="radio" name="C66WATCOLST" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>7.Adequate water source for livestock in close proximity</td>
+        <td><input type="radio" name="C67WATLIV" value="1"  /></td>
+        <td><input type="radio" name="C67WATLIV" value="2"  /></td>
+        <td><input type="radio" name="C67WATLIV" value="3" checked="true" /></td>
+        <td><input type="radio" name="C67WATLIV" value="4"  /></td>
+        <td><input type="radio" name="C67WATLIV" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>8.Hygiene and sanitation</td>
+        <td><input type="radio" name="C68HUSANT" value="1"  /></td>
+        <td><input type="radio" name="C68HUSANT" value="2"  /></td>
+        <td><input type="radio" name="C68HUSANT" value="3" checked="true" /></td>
+        <td><input type="radio" name="C68HUSANT" value="4"  /></td>
+        <td><input type="radio" name="C68HUSANT" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>9.Land for farming animal grazing house construction</td>
+        <td><input type="radio" name="C69LANFARM" value="1"  /></td>
+        <td><input type="radio" name="C69LANFARM" value="2"  /></td>
+        <td><input type="radio" name="C69LANFARM" value="3" checked="true" /></td>
+        <td><input type="radio" name="C69LANFARM" value="4"  /></td>
+        <td><input type="radio" name="C69LANFARM" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>10.Land ownership</td>
+        <td><input type="radio" name="C610LANOWN" value="1"  /></td>
+        <td><input type="radio" name="C610LANOWN" value="2"  /></td>
+        <td><input type="radio" name="C610LANOWN" value="3" checked="true" /></td>
+        <td><input type="radio" name="C610LANOWN" value="4"  /></td>
+        <td><input type="radio" name="C610LANOWN" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>11.Safety and security</td>
+        <td><input type="radio" name="C611SAFTSECU" value="1"  /></td>
+        <td><input type="radio" name="C611SAFTSECU" value="2"  /></td>
+        <td><input type="radio" name="C611SAFTSECU" value="3" checked="true" /></td>
+        <td><input type="radio" name="C611SAFTSECU" value="4"  /></td>
+        <td><input type="radio" name="C611SAFTSECU" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>12.Livelihood</td>
+        <td><input type="radio" name="C612LIV" value="1"  /></td>
+        <td><input type="radio" name="C612LIV" value="2"  /></td>
+        <td><input type="radio" name="C612LIV" value="3" checked="true" /></td>
+        <td><input type="radio" name="C612LIV" value="4"  /></td>
+        <td><input type="radio" name="C612LIV" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>13.Access to local market</td>
+        <td><input type="radio" name="C613ACCMKT" value="1"  /></td>
+        <td><input type="radio" name="C613ACCMKT" value="2"  /></td>
+        <td><input type="radio" name="C613ACCMKT" value="3" checked="true" /></td>
+        <td><input type="radio" name="C613ACCMKT" value="4"  /></td>
+        <td><input type="radio" name="C613ACCMKT" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>14.Access to food and nutrition</td>
+        <td><input type="radio" name="C614ACCFDNU" value="1"  /></td>
+        <td><input type="radio" name="C614ACCFDNU" value="2"  /></td>
+        <td><input type="radio" name="C614ACCFDNU" value="3" checked="true" /></td>
+        <td><input type="radio" name="C614ACCFDNU" value="4"  /></td>
+        <td><input type="radio" name="C614ACCFDNU" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>15.Access to natural resources</td>
+        <td><input type="radio" name="C615ACNATRES" value="1"  /></td>
+        <td><input type="radio" name="C615ACNATRES" value="2"  /></td>
+        <td><input type="radio" name="C615ACNATRES" value="3" checked="true" /></td>
+        <td><input type="radio" name="C615ACNATRES" value="4"  /></td>
+        <td><input type="radio" name="C615ACNATRES" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>16.Public affairs</td>
+        <td><input type="radio" name="C616PUBAFF" value="1"  /></td>
+        <td><input type="radio" name="C616PUBAFF" value="2"  /></td>
+        <td><input type="radio" name="C616PUBAFF" value="3" checked="true" /></td>
+        <td><input type="radio" name="C616PUBAFF" value="4"  /></td>
+        <td><input type="radio" name="C616PUBAFF" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>17.Access to banks insurance telecom postal service road transport</td>
+        <td><input type="radio" name="C617ACBANK" value="1"  /></td>
+        <td><input type="radio" name="C617ACBANK" value="2"  /></td>
+        <td><input type="radio" name="C617ACBANK" value="3" checked="true" /></td>
+        <td><input type="radio" name="C617ACBANK" value="4"  /></td>
+        <td><input type="radio" name="C617ACBANK" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>18.Access to key documents</td>
+        <td><input type="radio" name="C618ACDOC" value="1"  /></td>
+        <td><input type="radio" name="C618ACDOC" value="2"  /></td>
+        <td><input type="radio" name="C618ACDOC" value="3" checked="true" /></td>
+        <td><input type="radio" name="C618ACDOC" value="4"  /></td>
+        <td><input type="radio" name="C618ACDOC" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>19.Access to infromation communication and media services</td>
+        <td><input type="radio" name="C619ACINFO" value="1"  /></td>
+        <td><input type="radio" name="C619ACINFO" value="2"  /></td>
+        <td><input type="radio" name="C619ACINFO" value="3" checked="true" /></td>
+        <td><input type="radio" name="C619ACINFO" value="4"  /></td>
+        <td><input type="radio" name="C619ACINFO" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>20.NFI</td>
+        <td><input type="radio" name="C620NFI" value="1"  /></td>
+        <td><input type="radio" name="C620NFI" value="2"  /></td>
+        <td><input type="radio" name="C620NFI" value="3" checked="true" /></td>
+        <td><input type="radio" name="C620NFI" value="4"  /></td>
+        <td><input type="radio" name="C620NFI" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>21.Protection</td>
+        <td><input type="radio" name="C621PROTECTION" value="1"  /></td>
+        <td><input type="radio" name="C621PROTECTION" value="2"  /></td>
+        <td><input type="radio" name="C621PROTECTION" value="3" checked="true" /></td>
+        <td><input type="radio" name="C621PROTECTION" value="4"  /></td>
+        <td><input type="radio" name="C621PROTECTION" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>22.Legal Assistance</td>
+        <td><input type="radio" name="C622LEGAL" value="1"  /></td>
+        <td><input type="radio" name="C622LEGAL" value="2"  /></td>
+        <td><input type="radio" name="C622LEGAL" value="3" checked="true" /></td>
+        <td><input type="radio" name="C622LEGAL" value="4"  /></td>
+        <td><input type="radio" name="C622LEGAL" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>23.Psychosocial support</td>
+        <td><input type="radio" name="C623PSYCHOSOCIAL" value="1"  /></td>
+        <td><input type="radio" name="C623PSYCHOSOCIAL" value="2"  /></td>
+        <td><input type="radio" name="C623PSYCHOSOCIAL" value="3" checked="true" /></td>
+        <td><input type="radio" name="C623PSYCHOSOCIAL" value="4"  /></td>
+        <td><input type="radio" name="C623PSYCHOSOCIAL" value="0"  /></td>
+      </tr>
+	  <tr>
+	   
+        <td>24.Other</td>
+        <td><input type="radio" name="C624OTH" value="1"  /></td>
+        <td><input type="radio" name="C624OTH" value="2"  /></td>
+        <td><input type="radio" name="C624OTH" value="3" /></td>
+        <td><input type="radio" name="C624OTH" value="4"  /></td>
+        <td><input type="radio" name="C624OTH" value="0" checked="true"  /></td>
+      </tr>
+    </table>
+	</section> 
+<section id="secD1">
+<p>Secton D Livelyhood/Major<br></p>
+<p> D.1 what was were your household majo livelihood Livelyhood/Major<br></p>
+<div id="secD1reset_b" class="apdiv">click to reset</div>
+
+<input type="number" name="D11FISH"><b>1 Fishing</b><br/><br/>
+<input type="number" name="D12FARM"><b>2 Farming</b><br/><br/>
+<input type="number" name="D13PAST"><b>3 Pastoralism</b><br/><br/>
+<input type="number" name="D14SALTR"><b>4 Sale/trade</b><br/><br/>
+<input type="number" name="D15BUS"><b>5 Business</b><br/><br/>
+<input type="number" name="D16HELWOK"><b>6 Health</b><br/><br/>
+<input type="number" name="D17FORMA"><b>7 Formal employment</b><br/><br/>
+<input type="number" name="D18SKLD"><b>8 Skilled manual labor</b><br/><br/>
+<input type="number" name="D19UNSKLD"><b>9 unSkilled manual labor</b><br/><br/>
+<input type="number" name="D110RELROL"><b>10 Through Religious role such as preaching</b><br/><br/>
+<input type="number" name="D111COT"><b>11 construction</b><br/><br/>
+<input type="number" name="D112RELBOR"><b>12 Help from relatives or borrowing</b><br/><br/>
+<input type="number" name="D113REMT"><b>13 Remittance from family member</b><br/><br/>
+<input type="number" name="D114ASST"><b>14 Asset or property sale</b><br/><br/>
+<input type="number" name="D115HUMAID"><b>15 Humanitarian Aid</b><br/><br/>
+<input type="number" name="D116WELF"><b>16 Welfare/Safety net such as psnp</b><br/><br/>
+<input type="number" name="D117COLFIR"><b>17 Collection of firewood or preparation of charcoal</b><br/><br/>
+<input type="number" name="D118KIOSK"><b>18 Kiosk/small shop business</b><br/><br/>
+<input type="number" name="D119TEA"><b>19 Tea/coffee local drink shop</b><br/><br/>
+<input type="number" name="D120OTH"><b>20 Other</b><br/><br/>
+</section>
+<section id="secD2">
+<p> D.2 what is are your hosehold livelihood/major source of income currently in place of displacement?<I>(Rank in order of importance most to least important Multi options)</I><br/></p>
+<div id="secD2reset_b" class="apdiv">click to reset</div>
+<input type="number" name="D21FISH"><b>1 Fishing</b><br/><br/>
+<input type="number" name="D22FARM"><b>2 Farming</b><br/><br/>
+<input type="number" name="D23PAST"><b>3 Pastoralism</b><br/><br/>
+<input type="number" name="D24SAL"><b>4 Sale/trade</b><br/><br/>
+<input type="number" name="D25BUS"><b>5 Business</b><br/><br/>
+<input type="number" name="D26HLTWOK"><b>6 Health Worker</b><br/><br/>
+<input type="number" name="D27FOREMP"><b>7 Formal employment</b><br/><br/>
+<input type="number" name="D28SKLD"><b>8 Skilled manual labor</b><br/><br/>
+<input type="number" name="D29UNSKL"><b>9 unSkilled manual labor</b><br/><br/>
+<input type="number" name="D210RELG"><b>10 Through Religious role such as preaching</b><br/><br/>
+<input type="number" name="D211CONS"><b>11 construction</b><br/><br/>
+<input type="number" name="D212RELT"><b>12 Help from relatives or borrowing/b></b><br/><br/>
+<input type="number" name="D213REMIT"><b>13 Remittance from family member</b><br/><br/>
+<input type="number" name="D214ASST"><b>14 Asset or property sale</b><br/><br/>
+<input type="number" name="D215HUM"><b>15 Humanitarian Aid</b><br/><br/>
+<input type="number" name="D216WELF"><b>16 Welfare/Safety net such as psnp</b><br/><br/>
+<input type="number" name="D217COLFIR"><b>17 Collection of firewood or preparation of charcoal</b><br/><br/>
+<input type="number" name="D218KOISK"><b>18 Kiosk/small shop business</b><br/><br/>
+<input type="number" name="D219TEA"><b>19 Tea/coffee local drink shop</b><br/><br/>
+<input type="number" name="D220OTH"><b>20 Other</b><br/><br/>
+</section>
+
+
+<section id="secE1">
+<p> E HouseHold Intention towards achieving a durable solution<br></p>
+<p> E.1 Which of the solution option would your<br></p>
+
+<input type="radio" name="E1SOLDIS" value="1"  />Locally integrate
+<input type="radio" name="E1SOLDIS" value="2"   />Return to place of origin
+<input type="radio" name="E1SOLDIS" value="3"  />Relocate resettle<br/>
+<input type="radio" name="E1SOLDIS" value="4"  />Have not decided on any of the option
+<input type="radio" name="E1SOLDIS" value="5" checked="true" />Do not know
+<input type="radio" name="E1SOLDIS" value="6"  />Other
+</section>
+<div id="allE2">
+
+<section id="secE21">
+<p> E.2 Local Integration as most preferred option<br/></p>
+<p> E.2.1 Which of the factors listed bellow<br/></p>
+<div id="secE21reset_b" class="apdiv">click to reset</div>
+<input type="number" name="E211BL" onfocusout="yoniValidation(this,1,18)"><b>1 Better Living conditions here</b><br/><br/>
+<input type="number" name="E212BH"><b>2 We have better house here</b><br/><br/>
+<input type="number" name="E213MSAF"><b>3 We feel more safe/secure here</b><br/><br/>
+<input type="number" name="E214BLH"><b>4 We have better livelihood</b><br/><br/>
+<input type="number" name="E215ACEDU"><b>5 we have better access to education here</b><br/><br/>
+<input type="number" name="E216HELS"><b>6 we have better health services here</b><br/><br/>
+<input type="number" name="E217PSWAT"><b>7 we have enough pasture and water for our livestock here</b><br/><br/>
+<input type="number" name="E218RELT"><b>8 other relatives</b><br/><br/>
+<input type="number" name="E219HOSCO"><b>9 host community</b><br/><br/>
+<input type="number" name="E2110REG"><b>10 we are registered and ave basic documents</b><br/><br/>
+<input type="number" name="E2111ACJU"><b>11 we have access</b><br/><br/>
+<input type="number" name="E2112PART"><b>12 we fully participate</b><br/><br/>
+<input type="number" name="E2113FELHO"><b>13 we alredy feel this is our home</b><br/><br/>
+<input type="number" name="E2114DEC"><b>14 our clan has decided that we should stay here</b><br/><br/>
+<input type="number" name="E2115INS"><b>15 authorities instructed us to stay here</b><br/><br/>
+<input type="number" name="E2116NOOP"><b>16 there are no other options</b><br/><br/>
+<input type="number" name="E2117DOTKN"><b>17 idont know</b><br/><br/>
+<input type="number" name="E2118OTH"><b>18 oter</b><br/><br/>
+</section>
+<section id="secE22">
+<p> E.2.2 Which of the condition listed bellow would your hosehold like to see iproved for successfull integration of your hosehold<br></p>
+<div id="secE22reset_b" class="apdiv">click to reset</div>
+<input type="number" name="E221HEL"><b>1 healt servece</b><br/><br/>
+<input type="number" name="E222VATS"><b>2 verinary service</b><br/><br/>
+<input type="number" name="E223HOU"><b>3 house </b><br/><br/>
+<input type="number" name="E224EDU"><b>4 education</b><br/><br/>
+<input type="number" name="E225WAT"><b>5 clean and adequate water for drinking</b><br/><br/>
+<input type="number" name="E226KITS"><b>6 adequate water collecion and storage</b><br/><br/>
+<input type="number" name="E227WATLIV"><b>7 adequate water source</b><br/><br/>
+<input type="number" name="E228HYGSA"><b>8 hygiene and sanitation</b><br/><br/>
+<input type="number" name="E229LNDFAR"><b>9 land of farming </b><br/><br/>
+<input type="number" name="E2210LOWN"><b>10 land ownership</b><br/><br/>
+<input type="number" name="E2211SS"><b>11 sefety and security</b><br/><br/>
+<input type="number" name="E2212LIV"><b>12 livelihood</b><br/><br/>
+<input type="number" name="E2213MKT"><b>13 access to local market</b><br/><br/>
+<input type="number" name="E2214FOD"><b>14 access to food and nutrition</b><br/><br/>
+<input type="number" name="E2215NATRE"><b>15 access to natural resources</b><br/><br/>
+<input type="number" name="E2216PUAF"><b>16 public affairs (social gathering membership to association voting religious and cultural events/meeting)</b><br/><br/>
+<input type="number" name="E2217BANK"><b>17 Access to banks,insuranc,telecom,postal service,road,transport,mosque,church</b><br/><br/>
+<input type="number" name="E2218DOC"><b>18 Access to key documents (kebele id,passport birth..)</b><br/><br/>
+<input type="number" name="E2219INFO"><b>19 Access to information communication and media services(Tv radio newspaper)</b><br/><br/>
+<input type="number" name="E2220REUN"><b>20 Bringing separated family members relatives here</b><br/><br/>
+<input type="number" name="E2221ALW"><b>21 Integration allowance(cash or in kind)</b><br/><br/>
+<input type="number" name="E2222CONF"><b>22 official confirmation by local community/authority for our integration </b><br/><br/>
+<input type="number" name="E2223OTH"><b>23 other specify</b><br/><br/>
+</section>
+<section id="secE23">
+<p> E.2.3 Why does your household not prefer to return to place of origin?<br></p>
+<div id="secE23reset_b" class="apdiv">click to reset</div>
+<input type="number" name="E231SEC"><b>1 Lack of security in Place of origin</b><br/><br/>
+<input type="number" name="E232INC"><b>2 Lack of employment income livelihood in place of origin</b><br/><br/>
+<input type="number" name="E233EDU"><b>3 Lack of Education in place of origin</b><br/><br/>
+<input type="number" name="E234HELS"><b>4 Lack of health services in place of origin </b><br/><br/>
+<input type="number" name="E235LAND"><b>5 Lack of land in place of origin </b><br/><br/>
+<input type="number" name="E236WAT"><b>6 chronic water shortage inplace of origin </b><br/><br/>
+<input type="number" name="E237DRO"><b>7 Ongoing Drought/food Shortage/famin in place of origin </b><br/><br/>
+<input type="number" name="E238HOS"><b>8 Lack of safe housing in place of origin </b><br/><br/>
+<input type="number" name="E239DISC"><b>9 Discrimination in place of origin</b><br/><br/>
+<input type="number" name="E2310INT"><b>10 posibility of lack integration </b><br/><br/>
+<input type="number" name="E2311TRS"><b>11 Lack of transportation back to place of origin</b><br/><br/>
+<input type="number" name="E2312INFO"><b>12 Lack of adequate information on situation of place of origin</b><br/><br/>
+<input type="number" name="E2313OTH"><b>13 Other</b><br/><br/>
+</section>
+<section id="secE24">
+<p> E.2.4 Why does your household not prefer to be relocate to other place?<br></p>
+
+<div id="secE24reset_b" class="apdiv">click to reset</div>
+<input type="number" name="E241RELC"><b>1 Relocation options were not presented</b><br/><br/>
+<input type="number" name="E242INF"><b>2 limited information on options of relocation</b><br/><br/>
+<input type="number" name="E243LIV"><b>3 uncertain about livelihood</b><br/><br/>
+<input type="number" name="E244EDU"><b>4 uncertain about access to basic services</b><br/><br/>
+<input type="number" name="E245LAN"><b>5 uncertain about safety and security</b><br/><br/>
+<input type="number" name="E246SAF"><b>6 uncertain about safety and security</b><br/><br/>
+<input type="number" name="E247INT"><b>7 possibility of local integration</b><br/><br/>
+<input type="number" name="E248OTH"><b>8 other</b><br/><br/>
+</section>
+</div>
+<div id="allE3">
+<section id="secE31">
+<p> E.3.1 Which of the factors listed below contributed to your household preference to return to place of origin?<br></p>
+
+<div id="secE31reset_b" class="apdiv">click to reset</div>
+<input type="number" name="E311CAUS"><b>1 cause of displacement resolved / improving</b><br/><br/>
+<input type="number" name="E312UNSF"><b>2 Fell unsafe/insecure in current place pressure to leave host community authorities do not want us to stay here andy longer</b><br/><br/>
+<input type="number" name="E313CLDEC"><b>3 clan decision to return to place of origin</b><br/><br/>
+<input type="number" name="E314GVDIS"><b>4 government decision to return to place of origin</b><br/><br/>
+<input type="number" name="E315REU"><b>5 family reunification (some family members already moved back to place of origin)</b><br/><br/>
+<input type="number" name="E316REURE"><b>6 Family reunification (some family members already moved back to place of origin)</b><br/><br/>
+<input type="number" name="E317OPO"><b>7 Opportunity to resume previous livelihood</b><br/><br/>
+<input type="number" name="E318LAD"><b>8 to reclaim land and property in place of origin</b><br/><br/>
+<input type="number" name="E319OPLIV"><b>9 opportunity to earn a liveing & restart and life in place of origin</b><br/><br/>
+<input type="number" name="E3110HUM"><b>10 Humanitarian development assistance available in place of origin</b><br/><br/>
+<input type="number" name="E3111ATT"><b>11 Strong attachment memory in place of origin </b><br/><br/>
+<input type="number" name="E3112EMP"><b>12 Lack of employment in current place</b><br/><br/>
+<input type="number" name="E3113EDU"><b>13 lack of education services in current place</b><br/><br/>
+<input type="number" name="E3114HET"><b>14 Lack of health service in current place</b><br/><br/>
+<input type="number" name="E3115LAN"><b>15 Lack of access to land in current place</b><br/><br/>
+<input type="number" name="E3116SHL"><b>16 Lack of shelter housing land in current place</b><br/><br/>
+<input type="number" name="E3117WTH"><b>17 Better Weather in place of origin </b><br/><br/>
+<input type="number" name="E3118LAD"><b>18 inadequate space/land/resource in current place</b><br/><br/>
+<input type="number" name="E3119RET"><b>19 possibility of return in place of origin </b><br/><br/>
+<input type="number" name="E3120OTH"><b>20 Lack of other options</b><br/><br/>
+<input type="number" name="E3121OTH"><b>21 Other</b><br/><br/>
+</section>
+<section id="secE32">
+<p> E.3.2 Which of the factors listed below contributed to your household preference to return to place of origin?<br/></p>
+<div id="secE32reset_b" class="apdiv">click to reset</div>
+<input type="number" name="E321HET"><b>1 improving health services and facility</b><br/><br/>
+<input type="number" name="E322VET"><b>2 Improving veterinary service for livestock </b><br/><br/>
+<input type="number" name="E323COT"><b>3 construction renovation of shelters</b><br/><br/>
+<input type="number" name="E324EDU"><b>4 strengthening of education serveces and facilities</b><br/><br/>
+<input type="number" name="E325MIN"><b>5 Maintenance improvement of water sources</b><br/><br/>
+<input type="number" name="E326IMP"><b>6 Improvement of access to water source for livestock</b><br/><br/>
+<input type="number" name="E327HYG"><b>7 Hygiene and sanitation latrine waste disposal</b><br/><br/>
+<input type="number" name="E328SEC"><b>8 securing returnign of land ownership</b><br/><br/>
+<input type="number" name="E329REP"><b>9 Reparation for lost damaged assets and property</b><br/><br/>
+<input type="number" name="E3210GUR"><b>10 Guaranty of safety and security </b><br/><br/>
+<input type="number" name="E3211IMP"><b>11 Improvement of lively hood</b><br/><br/>
+<input type="number" name="E3212MKT"><b>12 Access to local </b><br/><br/>
+<input type="number" name="E3213FOD"><b>13 Access to food and nutrition</b><br/><br/>
+<input type="number" name="E3214NATRE"><b>14 Access to natural resources</b><br/><br/>
+<input type="number" name="E3215AFIR"><b>15 public affairs social gathering...</b><br/><br/>
+<input type="number" name="E3216BAK"><b>16 Access to bank insurance telecom postal service road transport mosque church</b><br/><br/>
+<input type="number" name="E3217DOC"><b>17 Access to key document kebele id passport birth marriage and acadamic certificate business license land ownership</b><br/><br/>
+<input type="number" name="E3218INFO"><b>18 Access to information communication and media servece</b><br/><br/>
+<input type="number" name="E3219REUN"><b>19 Bringing separated family members relatives from other different locations to place of origin </b><br/><br/>
+<input type="number" name="E3220RET"><b>20 return reintegration assistance</b><br/><br/>
+<input type="number" name="E3221GVRET"><b>21 official notification by government to return back to place of origin</b><br/><br/>
+<input type="number" name="E3222TRNS"><b>22 provision of transportation facility for people asset and property</b><br/><br/>
+<input type="number" name="E3223RECO"><b>23 reconciliation and peace dialogue with conflicting community</b><br/><br/>
+<input type="number" name="E3224DRR"><b>24 put in place disaster prevention DRR structures</b><br/><br/>
+<input type="number" name="E3225TIMP"><b>25 Enough time for preparation</b><br/><br/>
+<input type="number" name="E3226INF"><b>26 Making adequate information on situations in place of origin available</b><br/><br/>
+<input type="number" name="E3227ORG"><b>27 organizing go and see mission</b><br/><br/>
+<input type="number" name="E3228OTH"><b>28 Other</b><br/><br/>
+</section>
+<section id="secE33">
+<p> E.3.3 Why does your household not prefer to integrate locally?<br/></p>
+<div id="secE33reset_b" class="apdiv">click to reset</div>
+<input type="number" name="E331SEC"><b>1 Lack of security in current place of displacement</b><br/><br/>
+<input type="number" name="E332EMP"><b>2 lack of employment income livelihood in place of displacement</b><br/><br/>
+<input type="number" name="E333EDU"><b>3 lack of education in place of displacement</b><br/><br/>
+<input type="number" name="E334HEL"><b>4 lack of health serveices in place of displacement</b><br/><br/>
+<input type="number" name="E335LAN"><b>5 lack of land in place of displacement</b><br/><br/>
+<input type="number" name="E336WAT"><b>6 water shortage in place of displacement</b><br/><br/>
+<input type="number" name="E337DRO"><b>7 Drought food shortage famine in place of displacement</b><br/><br/>
+<input type="number" name="E338SAF"><b>8 lack of safe adequate housing in place of displacement</b><br/><br/>
+<input type="number" name="E339DIS"><b>9 Discrimination in place of displacement</b><br/><br/>
+<input type="number" name="E3310POS"><b>10 possibility of return to place of origin</b><br/><br/>
+<input type="number" name="E3311HOS"><b>11 host communities local </b><br/><br/>
+<input type="number" name="E3312OTH"><b>12 others</b><br/><br/>
+</section>
+<section id="secE34">
+<p> E.3.4 Why does your household not prefer to be relocated to other place?<br/></p>
+<div id="secE34reset_b" class="apdiv">click to reset</div>
+<input type="number" name="E341RELO"><b>1 relocaton  option were not presented</b><br/><br/>
+<input type="number" name="E342LIMIN"><b>2 limited information on option of relocation</b><br/><br/>
+<input type="number" name="E343UNC"><b>3 uncertain about livelihood</b><br/><br/>
+<input type="number" name="E344BAS"><b>4 uncertain about access to basic service</b><br/><br/>
+<input type="number" name="E345INLA"><b>5 uncertain about access to property including land</b><br/><br/>
+<input type="number" name="E346SAF"><b>6 uncertain about safety and security</b><br/><br/>
+<input type="number" name="E347POS"><b>7 possibility of return to place of origin</b><br/><br/>
+<input type="number" name="E348OTH"><b>8 other</b><br/><br/>
+</section>
+<section id="secE35">
+<p> E.3.5 When do you consider your household will be ready to return to place of origin?<br/></p>
+
+<input type="radio" name="E351WHN" value="1"  /> > 3 month
+<input type="radio" name="E351WHN" value="2"  /> 3-6 month
+<input type="radio" name="E351WHN" value="3"  /> 6-12 month<br/>
+<input type="radio" name="E351WHN" value="4"  /> 1-2 year
+<input type="radio" name="E351WHN" value="5"  /> asd
+<input type="radio" name="E351WHN" value="6"  /> Do not know
+<input type="radio" name="E351WHN" value="7"  />Othe
+<input type="radio" name="E351WHN" value="" checked="true"  />Not Specified
+</section>
+</div>
+<div id="allE4">
+<section id="secE41">
+<p> E.4 Relocation Resettlement as most preferred option<br/></p>
+<p> E.4.1 Which of the factors listed bellow<br/></p>
+<div id="secE41reset_b" class="apdiv">click to reset</div>
+<input type="number" name="E411GOV"><b>1 its government dicisson</b><br/><br/>
+<input type="number" name="E412CLA"><b>2 its clan elders decision</b><br/><br/>
+<input type="number" name="E413HOST"><b>3 Host communities local authorities</b><br/><br/>
+<input type="number" name="E414NOTSAF"><b>4 its not safe for us to stay here no longer</b><br/><br/>
+<input type="number" name="E415LIV"><b>5 opportunity to start new livelihood</b><br/><br/>
+<input type="number" name="E416EARN"><b>6 opportunity to earn a liveing restart a life in new place</b><br/><br/>
+<input type="number" name="E417HUM"><b>7 Humanitarian development assistance available in place of origin</b><br/><br/>
+<input type="number" name="E418EMP"><b>8 Lack of employment in place of origin and displacement</b><br/><br/>
+<input type="number" name="E419LACKED"><b>9 lack of education services in place of origin and displacement</b><br/><br/>
+<input type="number" name="E4110LKHEL"><b>10 Lack of service in place of origin and displacement</b><br/><br/>
+<input type="number" name="E4111LAN"><b>11 lack of access to land in place of origin and displacement</b><br/><br/>
+<input type="number" name="E4112SHT"><b>12 Lack of shelter housing in place of origin and displacement </b><br/><br/>
+<input type="number" name="E4113RES"><b>13 inadequate space land resource in place of origin and displacement</b><br/><br/>
+<input type="number" name="E4114RET"><b>14 possibility of return to place of origin </b><br/><br/>
+<input type="number" name="E4115OTH"><b>15 lack of other option</b><br/><br/>
+<input type="number" name="E4116OTH"><b>16 other</b><br/><br/>
+</section>
+<section id="secE42">
+<p> E.4.2 Which of the conditions listed below would your household like to see improved for successful relocation of your household?<br></p>
+<div id="secE42reset_b" class="apdiv">click to reset</div>
+<input type="number" name="E421INF"><b>1 More information on security in living</b><br/><br/>
+<input type="number" name="E422LAN"><b>2 Allocation of enough land for farming</b><br/><br/>
+<input type="number" name="E423RES"><b>3 Restocking</b><br/><br/>
+<input type="number" name="E424SKD"><b>4 skill development and livelihood </b><br/><br/>
+<input type="number" name="E425NATRE"><b>5 adequate access</b><br/><br/>
+<input type="number" name="E426BASER"><b>6 adequate access to basic services such as education</b><br/><br/>
+<input type="number" name="E427GOV"><b>7 official notification</b><br/><br/>
+<input type="number" name="E428TRS"><b>8 Provision of transportaion</b><br/><br/>
+<input type="number" name="E429RECO"><b>9 reconciliation and peace</b><br/><br/>
+<input type="number" name="E4210TIM"><b>10 Enough time for preparation </b><br/><br/>
+<input type="number" name="E4211SAF"><b>11 Guarantee of safety and security </b><br/><br/>
+<input type="number" name="E4212ORG"><b>12 organizing go and see</b><br/><br/>
+<input type="number" name="E4213DOC"><b>13 Access to information </b><br/><br/>
+<input type="number" name="E4214INF"><b>14 Access to information communication and media</b><br/><br/>
+<input type="number" name="E4215BRNG"><b>15 bringing separated family</b><br/><br/>
+<input type="number" name="E4216REST"><b>16 resettlement assistance</b><br/><br/>
+<input type="number" name="E4217OTH"><b>17 other</b><br/><br/>
+</section>
+<section id="secE43">
+<p> E.4.3 Which of the conditions listed below would your household like to see improved for successful relocation of your household?<br></p>
+
+<input type="radio" name="E43REDRET" value="1"  /> > 3 month
+<input type="radio" name="E43REDRET" value="2"  /> 3-6 month
+<input type="radio" name="E43REDRET" value="3"  /> 6-12 month<br/>
+<input type="radio" name="E43REDRET" value="4"  /> 1-2 year
+<input type="radio" name="E43REDRET" value="5"  /> &lt; 2year
+<input type="radio" name="E43REDRET" value="6"  /> Do not know
+<input type="radio" name="E43REDRET" value="7"  />Othe
+<input type="radio" name="E43REDRET" value="" checked="true"  />Not Specified
+</section>
+<section id="secE44">
+<p> E.4.4 Why does your household not prefer to return to place of origin?<br></p>
+<div id="secE44reset_b" class="apdiv">click to reset</div>
+<input type="number" name="E441SEC"><b>1 Lack of security in current place of Origin</b><br/><br/>
+<input type="number" name="E442EMP"><b>2 lack of employment income place of origin</b><br/><br/>
+<input type="number" name="E443EDU"><b>3 lack of education</b><br/><br/>
+<input type="number" name="E444HEL"><b>4 lack of health</b><br/><br/>
+<input type="number" name="E445LAN"><b>5 Lack of land in place</b><br/><br/>
+<input type="number" name="E446WAT"><b>6 Water Shortage</b><br/><br/>
+<input type="number" name="E447DRO"><b>7 Ongoing Drought</b><br/><br/>
+<input type="number" name="E449REL"><b>9 Possibility of relocation</b><br/><br/>
+<input type="number" name="E4410TRS"><b>10 Lack of transportation</b><br/><br/>
+<input type="number" name="E4411INF"><b>11 Lack of adequate</b><br/><br/>
+<input type="number" name="E4412OTH"><b>12 Other specify</b><br/><br/>
+</section>
+<section id="secE45">
+<p> E.4.5 Why does your household not prefer to integrate locally?<br></p>
+<div id="secE45reset_b" class="apdiv">click to reset</div>
+<input type="number" name="E451SEC"><b>1 Lack of security in current place of displacement</b><br/><br/>
+<input type="number" name="E452EMP"><b>2 lack of employment income place of displacement</b><br/><br/>
+<input type="number" name="E453EDU"><b>3 lack of education</b><br/><br/>
+<input type="number" name="E454HEL"><b>4 lack of health</b><br/><br/>
+<input type="number" name="E455LAN"><b>5 lack of land</b><br/><br/>
+<input type="number" name="E456WAT"><b>6 Water Shortage</b><br/><br/>
+<input type="number" name="E457DRO"><b>7 Drought</b><br/><br/>
+<input type="number" name="E458SAF"><b>8 Lack of Safe</b><br/><br/>
+<input type="number" name="E459DIS"><b>9 Discrimination in place</b><br/><br/>
+<input type="number" name="E4510REL"><b>10 Possibility</b><br/><br/>
+<input type="number" name="E4511HOS"><b>11 Host Community</b><br/><br/>
+<input type="number" name="E4512OTH"><b>12 Other</b><br/><br/>
+</section>
+</div>
+<div id="allE5">
+<section id="secE5">
+<p> E.5 Have you decided yet<br></p>
+<p> E.5.1 Why have you not decided on intended solutions/options<br></p>
+<div id="secE5reset_b" class="apdiv">click to reset</div>
+<input type="number" name="E511DEC"><b>I can not make that decision</b><br/><br/>
+<input type="number" name="E512DEC"><b>I Expect that Decision from Clan leaders</b><br/><br/>
+<input type="number" name="E513NON"><b>None of the options are viable for me</b><br/><br/>
+<input type="number" name="E514INF"><b>I dont have enough information to be able to make that decision</b><br/><br/>
+<input type="number" name="E515CONS"><b>There is no consensus among family members relatives and neighbors on options</b><br/><br/>
+<input type="number" name="E516OTH"><b>Other</b><br/><br/>
+</section>
+</div>
+</form>
+
+				<!-- End -->
+				</p>
+				
+			</div>
+		</main>
+
+		<nav id="left">
+			<div class="innertube">
+				<h1>Select a Section</h1>
+				<ul>
+<li><a href="#secA">A</a></li>
+<li><a href="#secB">B</a></li>
+<li><a href="#secB5">B5</a></li>
+<li><a href="#secB6">B6</a></li>
+<li><a href="#secB7-11">B7-11</a></li>
+<li><a href="#secC1">C1</a></li>
+<li><a href="#secC2">C2</a></li>
+<li><a href="#secC3">C3</a></li>
+<li><a href="#secC4">C4</a></li>
+<li><a href="#secC5">C5</a></li>
+<li><a href="#secC6">C6</a></li>
+<li><a href="#secD1">D1</a></li>
+<li><a href="#secD2">D2</a></li>
+<li><a href="#secE1">E1</a></li>
+<li><a href="#secE21">E2.1</a></li>
+<li><a href="#secE22">E2.2</a></li>
+<li><a href="#secE23">E2.3</a></li>
+<li><a href="#secE24">E2.4</a></li>
+<li><a href="#secE31">E3.1</a></li>
+<li><a href="#secE32">E3.2</a></li>
+<li><a href="#secE33">E3.3</a></li>
+<li><a href="#secE34">E3.4</a></li>
+<li><a href="#secE35">E3.5</a></li>
+<li><a href="#secE41">E4.1</a></li>
+<li><a href="#secE42">E4.2</a></li>					
+<li><a href="#secE43">E4.3</a></li>
+<li><a href="#secE44">E4.4</a></li>
+<li><a href="#secE45">E4.5</a></li>
+<li><a href="#secE5">E5.1</a></li>				
+				
+				</ul>
+				<!--<h1>Heading</h1>
+				<ul>
+					<li><a href="#">Link 1</a></li>
+					<li><a href="#">Link 2</a></li>
+					<li><a href="#">Link 3</a></li>
+					<li><a href="#">Link 4</a></li>
+					<li><a href="#">Link 5</a></li>
+				</ul>-->
+
+			</div>
+		</nav>	
+		<div id="right">
+			<div class="innertube">
+				<p>
+				To correct your form please press get list and </br>select form name then press <I>ready to edit</I>
+				<button id="updateF">GetList</button>
+				<div class="elem" id="cities">
+				
+<select id="editable_Form">
+</select>
+</div>
+				<button id="makec">ready to edit</button></p>
+			</div>
+		</div>
+		
+		<footer id="footer">
+		<button id="userClick" >Save This Record</button>
+		<button id="resetbtn"  disabled> Update This Form </button>
+
+			<div class="innertube">
+				<p>Registerd on Yonatan Code GIT</p>
+			</div>
+		</footer>	
+			
+	</body>
+</html>

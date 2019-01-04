@@ -1,0 +1,36 @@
+<head>
+<script type="text/javascript" src="jquery.js"></script>
+
+<script>
+
+$(document).ready(function(){
+ $('#texto').val();
+ $('#boton').click(function(){
+   $.ajax({
+     type:'GET',
+     url:'login.php',
+     data:{"producto":$('#texto').val()},
+     success: function(data){
+       sessionStorage.setItem('key', 'value');
+	   window.open("dashbord.html");
+	   //datos = data;
+       //datos = $.parseJSON(datos);
+         }
+      });
+			
+     $('#mostrardatos').text(datos);
+});
+
+$('#boton1').click(function(){
+   sessionStorage.setItem('key', $('#texto').val());
+   window.open("dashbord.html");
+});
+
+});
+</script>
+</head>
+<body>
+<input type="text" id="texto" /><input type="button" id="boton" value="dar" />
+<input type="button" id="boton1" value="jumpin" />
+<span id="mostrardatos"></span>
+</body>
